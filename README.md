@@ -2,9 +2,9 @@
 
 Task: Create a Banking Dapp which has a beautiful front-end design.
 
-![alt text](Project-Exp.png " blockchain project expalained ")
-
 ## Overview :
+
+![alt text](Project-Exp.png " blockchain project expalained ")
 
 *Backend:*
 ----------
