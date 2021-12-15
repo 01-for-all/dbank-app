@@ -6,6 +6,7 @@ Task: Create a Banking Dapp which has a beautiful front-end design.
 
 ![alt text](Project-Exp.png " blockchain project expalained ")
 
+
 *Backend:*
 ----------
 - Blockchain 
@@ -51,6 +52,9 @@ Create two smart contract **dbank and token**. Bank smart contract uses token ge
     ```
 
 ## Step 2: Using Web3.js: 
+
+![alt text](Screenshot-1.png " blockchain project expalained ")
+
  - Using Web3.js to connect webapp to local Blockchain network which is **Ganache**. 
  - deploy.js : 
 ```js
