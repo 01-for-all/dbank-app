@@ -207,4 +207,20 @@ Create two smart contract **dbank and token**. Bank smart contract uses token ge
 
 ## Output: 
 
-![alt text](Dapp-Screenshot.png " Dbank website output ")
+- Deposit:
+
+![alt text](Screenshot-output-1.png " Dbank website output ")
+
+- Withdraw:
+
+![alt text](Screenshot-output-2.png " Dbank website output ")
+
+- Payoff:
+
+![alt text](Screenshot-output-3.png " Dbank website output ")
+
+- Borrow:
+
+![alt text](Screenshot-output-4.png " Dbank website output ")
+
+
