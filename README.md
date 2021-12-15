@@ -50,7 +50,7 @@ Create two smart contract **dbank and token**. Bank smart contract uses token ge
 
     ```
 
-## Step 2: Using Web3.js 
+## Step 2: Using Web3.js: 
  - Using Web3.js to connect webapp to local Blockchain network which is **Ganache**. 
  - deploy.js : 
 ```js
