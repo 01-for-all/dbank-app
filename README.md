@@ -52,6 +52,21 @@ Create two smart contract **dbank and token**. Bank smart contract uses token ge
 
 ## Step 2: Using Web3.js 
  - Using Web3.js to connect webapp to local Blockchain network which is **Ganache**. 
+ - deploy.js : 
+```js
+ //deploy Token
+  await deployer.deploy(Token);
+  //assign token into variable to get it's address
+  const token = await Token.deployed();
+  //pass token address for dBank contract(for future minting)
+  await deployer.deploy(dBank, token.address);
+  //assign dBank contract into variable to get it's address
+  const dbank = await dBank.deployed();
+  //change token's owner/minter from deployer to dBank
+  await token.passMinterRole(dbank.address);
+   
+```
+ -  
 
 ## Step 3: Using React for front-end :  
 
