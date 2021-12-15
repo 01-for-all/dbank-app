@@ -66,7 +66,6 @@ Create two smart contract **dbank and token**. Bank smart contract uses token ge
   await token.passMinterRole(dbank.address);
    
 ```
- -  
 
 ## Step 3: Using React for front-end :  
 
