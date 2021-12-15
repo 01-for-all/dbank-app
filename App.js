@@ -6,35 +6,31 @@ import dbank from "../dbank.png";
 import Web3 from "web3";
 import "./App.css";
 
-//h0m3w0rk - add new tab to check accrued interest
-
 class App extends Component {
   async componentWillMount() {
     await this.loadBlockchainData(this.props.dispatch);
   }
 
   async loadBlockchainData(dispatch) {
-    //check if MetaMask exists
-    if (typeof window.ethereum != "undefined") {
+    if (typeof window.ethereum !== "undefined") {
       const web3 = new Web3(window.ethereum);
       const netId = await web3.eth.net.getId();
       const accounts = await web3.eth.getAccounts();
-      // load balance
-      if (typeof accounts[0] != "undefined") {
+
+      //load balance
+      if (typeof accounts[0] !== "undefined") {
         const balance = await web3.eth.getBalance(accounts[0]);
         this.setState({ account: accounts[0], balance: balance, web3: web3 });
       } else {
         window.alert("Please login with MetaMask");
       }
 
-      //load contract
+      //load contracts
       try {
-        // Token
         const token = new web3.eth.Contract(
           Token.abi,
           Token.networks[netId].address
         );
-        // Bank
         const dbank = new web3.eth.Contract(
           dBank.abi,
           dBank.networks[netId].address
@@ -52,18 +48,9 @@ class App extends Component {
     } else {
       window.alert("Please install MetaMask");
     }
-    //assign to values to variables: web3, netId, accounts
-
-    //check if account is detected, then load balance&setStates, elsepush alert
-
-    //in try block load contracts
-
-    //if MetaMask not exists push alert
   }
 
   async deposit(amount) {
-    //check if this.state.dbank is ok
-    //in try block call dBank deposit();
     if (this.state.dbank !== "undefined") {
       try {
         await this.state.dbank.methods
@@ -76,9 +63,6 @@ class App extends Component {
   }
 
   async withdraw(e) {
-    //prevent button from default click
-    //check if this.state.dbank is ok
-    //in try block call dBank withdraw();
     e.preventDefault();
     if (this.state.dbank !== "undefined") {
       try {
@@ -87,6 +71,38 @@ class App extends Component {
           .send({ from: this.state.account });
       } catch (e) {
         console.log("Error, withdraw: ", e);
+      }
+    }
+  }
+
+  async borrow(amount) {
+    if (this.state.dbank !== "undefined") {
+      try {
+        await this.state.dbank.methods
+          .borrow()
+          .send({ value: amount.toString(), from: this.state.account });
+      } catch (e) {
+        console.log("Error, borrow: ", e);
+      }
+    }
+  }
+
+  async payOff(e) {
+    e.preventDefault();
+    if (this.state.dbank !== "undefined") {
+      try {
+        const collateralEther = await this.state.dbank.methods
+          .collateralEther(this.state.account)
+          .call({ from: this.state.account });
+        const tokenBorrowed = collateralEther / 2;
+        await this.state.token.methods
+          .approve(this.state.dBankAddress, tokenBorrowed.toString())
+          .send({ from: this.state.account });
+        await this.state.dbank.methods
+          .payOff()
+          .send({ from: this.state.account });
+      } catch (e) {
+        console.log("Error, pay off: ", e);
       }
     }
   }
@@ -107,19 +123,14 @@ class App extends Component {
     return (
       <div className="text-monospace">
         <nav className="navbar navbar-dark fixed-top bg-dark flex-md-nowrap p-0 shadow">
-          <a
-            className="navbar-brand col-sm-3 col-md-2 mr-0"
-            href="http://www.dappuniversity.com/bootcamp"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
+          <div className="navbar-brand col-sm-3 col-md-2 mr-0">
             <img src={dbank} className="App-logo" alt="logo" height="32" />
-            <b>dBank</b>
-          </a>
+            <b> Name DBank</b>
+          </div>
         </nav>
         <div className="container-fluid mt-5 text-center">
           <br></br>
-          <h1>Welcome to dBank</h1>
+          <h1>Welcome to Decentralized Bank App</h1>
           <h2>{this.state.account}</h2>
           <br></br>
           <div className="row">
@@ -175,6 +186,60 @@ class App extends Component {
                         onClick={(e) => this.withdraw(e)}
                       >
                         WITHDRAW
+                      </button>
+                    </div>
+                  </Tab>
+                  <Tab eventKey="borrow" title="Borrow">
+                    <div>
+                      <br></br>
+                      Do you want to borrow tokens?
+                      <br></br>
+                      (You'll get 50% of collateral, in Tokens)
+                      <br></br>
+                      Type collateral amount (in ETH)
+                      <br></br>
+                      <br></br>
+                      <form
+                        onSubmit={(e) => {
+                          e.preventDefault();
+                          let amount = this.borrowAmount.value;
+                          amount = amount * 10 ** 18; //convert to wei
+                          this.borrow(amount);
+                        }}
+                      >
+                        <div className="form-group mr-sm-2">
+                          <input
+                            id="borrowAmount"
+                            step="0.01"
+                            type="number"
+                            ref={(input) => {
+                              this.borrowAmount = input;
+                            }}
+                            className="form-control form-control-md"
+                            placeholder="amount..."
+                            required
+                          />
+                        </div>
+                        <button type="submit" className="btn btn-primary">
+                          BORROW
+                        </button>
+                      </form>
+                    </div>
+                  </Tab>
+                  <Tab eventKey="payOff" title="Payoff">
+                    <div>
+                      <br></br>
+                      Do you want to payoff the loan?
+                      <br></br>
+                      (You'll receive your collateral - fee)
+                      <br></br>
+                      <br></br>
+                      <button
+                        type="submit"
+                        className="btn btn-primary"
+                        onClick={(e) => this.payOff(e)}
+                      >
+                        PAYOFF
                       </button>
                     </div>
                   </Tab>
